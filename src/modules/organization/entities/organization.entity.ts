@@ -1,6 +1,6 @@
 import { Entity, PrimaryColumn, Column, CreateDateColumn, OneToMany } from 'typeorm';
 import { MemberEntity } from './member.entity';
-import { InvitationEntity } from './invitation';
+import { InvitationEntity } from './invitation.entity';
 
 
 @Entity('organization')
