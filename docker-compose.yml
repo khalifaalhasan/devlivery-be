@@ -1,0 +1,28 @@
+services:
+
+  # api:
+  #   build:
+  #     context: .
+  #     dockerfile: Dockerfile
+  #   container_name: devlivery-api
+  #   environment:
+  #     DATABASE_URL: postgresql://${DATABASE_USER}:${DATABASE_PASSWORD}@${DATABASE_HOST}:${DATABASE_PORT}/${DATABASE_DB}
+  #   ports:
+  #     - "3000:3000"
+  #   depends_on:
+  #     - postgres
+
+  postgres:
+    image: postgres:17-alpine
+    container_name: devlivery-postgres
+    environment:
+      POSTGRES_USER: ${DATABASE_USER}
+      POSTGRES_PASSWORD: ${DATABASE_PASSWORD}
+      POSTGRES_DB: ${DATABASE_DB}
+    ports:
+      - "5432:5432"
+    volumes:
+      - devlivery-postgres:/var/lib/postgresql/data
+
+volumes:
+  devlivery-postgres:
