@@ -651,44 +651,53 @@ Daftar pertanyaan yang belum diputuskan secara final dan perlu didiskusikan tim 
 Berikut adalah rancangan awal kontrak API RESTful antara Frontend dan Backend berdasarkan fitur MVP. Seluruh endpoint privat di bawah wajib menyertakan token JWT pada header `Authorization: Bearer <token>` dan akan memproses context tenant (organisasi) yang sedang aktif berdasarkan token tersebut.
 
 ### 13.1 Autentikasi & Organisasi
-- `POST /api/auth/register`
+- `POST /api/auth/register` *(Endpoint Publik)*
   - **Payload**: `{ "org_name": "...", "admin_email": "...", "admin_password": "...", "domain": "..." }`
   - **Response**: `{ "access_token": "...", "refresh_token": "...", "user": { ... }, "organization": { ... } }`
-- `POST /api/auth/login`
+- `POST /api/auth/login` *(Endpoint Publik)*
   - **Payload**: `{ "email": "...", "password": "..." }`
   - **Response**: `{ "access_token": "...", "refresh_token": "...", "user": { ... }, "organization": { ... } }`
-- `POST /api/auth/refresh`
+- `POST /api/auth/refresh` *(Endpoint Publik)*
   - **Payload**: `{ "refresh_token": "..." }`
   - **Response**: `{ "access_token": "...", "refresh_token": "..." }`
 - `GET /api/organization/members`
+  - **Roles**: `[owner, admin, manager, viewer]`
   - **Response**: `[ { "user_id": "...", "email": "...", "role": "admin", "status": "active" } ]`
 - `POST /api/organization/members/invite`
+  - **Roles**: `[owner, admin]`
   - **Payload**: `{ "email": "...", "role": "manager" }`
   - **Response**: `{ "message": "Invitation sent" }`
 
 ### 13.2 Manajemen Campaign
 - `GET /api/campaigns`
+  - **Roles**: `[owner, admin, manager, viewer]`
   - **Query**: `?status=all|active|draft`
   - **Response**: `[ { "id": "...", "name": "...", "date": "...", "status": "...", "participants_count": 0, "attendance_count": 0 } ]`
 - `POST /api/campaigns`
+  - **Roles**: `[owner, admin, manager]`
   - **Payload**: `{ "name": "...", "date": "...", "description": "...", "cover_image_url": "..." }`
   - **Response**: `{ "id": "...", "status": "draft", ... }`
 - `GET /api/campaigns/:campaign_id`
+  - **Roles**: `[owner, admin, manager, viewer]`
   - **Response**: `{ "id": "...", "name": "...", "date": "...", "description": "..." }`
 - `PUT /api/campaigns/:campaign_id`
+  - **Roles**: `[owner, admin, manager]`
   - **Payload**: `{ "name": "...", "date": "...", "description": "...", "status": "published" }`
   - **Response**: `{ "message": "Campaign updated" }`
 
 ### 13.3 Form Pendaftaran
 - `GET /api/campaigns/:campaign_id/form`
+  - **Roles**: `[owner, admin, manager, viewer]`
   - **Response**: `{ "fields": [ { "id": "...", "type": "text", "label": "Nama Lengkap", "required": true } ], "is_published": true, "public_url": "..." }`
 - `PUT /api/campaigns/:campaign_id/form`
+  - **Roles**: `[owner, admin, manager]`
   - **Payload**: `{ "fields": [ ... ] }`
   - **Response**: `{ "message": "Form schema updated" }`
 - `POST /api/public/f/:campaign_id/submit` *(Endpoint Publik)*
   - **Payload**: `{ "email": "...", "answers": { "field_id_1": "value1", "field_id_2": "value2" } }`
   - **Response**: `{ "message": "Pendaftaran berhasil", "attendance_token": "uuid-v4" }`
 - `GET /api/campaigns/:campaign_id/submissions`
+  - **Roles**: `[owner, admin, manager, viewer]`
   - **Response**: `[ { "submission_id": "...", "email": "...", "submitted_at": "...", "answers": { ... } } ]`
 
 ### 13.4 Absensi & Verifikasi QR
@@ -696,28 +705,37 @@ Berikut adalah rancangan awal kontrak API RESTful antara Frontend dan Backend be
   - **Payload**: `{ "attendance_token": "..." }`
   - **Response**: `{ "status": "success" | "already_attended" | "invalid", "participant_name": "...", "scanned_at": "..." }`
 - `GET /api/campaigns/:campaign_id/attendance`
+  - **Roles**: `[owner, admin, manager, viewer]`
   - **Response**: `{ "total_registered": 100, "total_attended": 85, "records": [ { "submission_id": "...", "scanned_at": "...", "method": "qr_token" } ] }`
 
 ### 13.5 Desain & Pengiriman Email / Sertifikat
 - `GET /api/campaigns/:campaign_id/email-template`
+  - **Roles**: `[owner, admin, manager, viewer]`
   - **Response**: `{ "subject": "...", "body_html": "...", "confirmation_subject": "...", "confirmation_body_html": "...", "header_image_url": "..." }`
 - `PUT /api/campaigns/:campaign_id/email-template`
+  - **Roles**: `[owner, admin, manager]`
   - **Payload**: `{ "subject": "...", "body_html": "...", "confirmation_subject": "...", "confirmation_body_html": "...", "header_image_url": "..." }`
 - `GET /api/campaigns/:campaign_id/certificate-template`
+  - **Roles**: `[owner, admin, manager, viewer]`
   - **Response**: `{ "background_image_url": "...", "elements": [ { "variable": "{{nama}}", "x": 100, "y": 200, "font_family": "Arial", "font_size": 24, "font_color": "#000", "font_weight": "bold", "text_align": "center" } ] }`
 - `PUT /api/campaigns/:campaign_id/certificate-template`
+  - **Roles**: `[owner, admin, manager]`
   - **Payload**: `{ "background_image_url": "...", "elements": [ ... ] }`
 - `POST /api/campaigns/:campaign_id/certificates/preview`
+  - **Roles**: `[owner, admin, manager]`
   - **Payload**: `{ "background_image_url": "...", "elements": [ ... ] }`
   - **Response**: `{ "preview_image_url": "..." }`
 - `POST /api/campaigns/:campaign_id/certificates/send`
+  - **Roles**: `[owner, admin, manager]`
   - **Payload**: `{ "filter": "all_attended" | "all_registered" | "manual", "manual_submission_ids": [] }`
   - **Response**: `{ "job_id": "...", "message": "Pengiriman sertifikat sedang diproses di background" }`
 - `GET /api/campaigns/:campaign_id/delivery-logs`
+  - **Roles**: `[owner, admin, manager, viewer]`
   - **Response**: `{ "total_sent": 50, "total_failed": 2, "logs": [ { "submission_id": "...", "email": "...", "type": "certificate", "status": "sent", "sent_at": "...", "error_message": null } ] }`
 
 ### 13.6 Kolaborasi (Share Link)
 - `POST /api/campaigns/:campaign_id/share-links`
+  - **Roles**: `[owner, admin, manager]`
   - **Payload**: `{ "type": "email_editor" | "design_editor", "expires_in_hours": 24 }`
   - **Response**: `{ "share_url": "...", "token": "..." }`
 - `GET /api/public/collab/:share_token` *(Endpoint Publik)*
