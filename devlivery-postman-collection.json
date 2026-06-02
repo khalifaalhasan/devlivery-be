@@ -6,7 +6,7 @@
   },
   "item": [
     {
-      "name": "Auth",
+      "name": "1. Auth",
       "item": [
         {
           "name": "Register Organization & Admin",
@@ -24,19 +24,27 @@
             },
             "url": {
               "raw": "{{baseUrl}}/api/auth/register",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "api",
-                "auth",
-                "register"
-              ]
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "auth", "register"]
             }
           }
         },
         {
           "name": "Login",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var jsonData = pm.response.json();",
+                  "if(jsonData.access_token) {",
+                  "    pm.collectionVariables.set(\"token\", jsonData.access_token);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
           "request": {
             "method": "POST",
             "header": [
@@ -51,13 +59,535 @@
             },
             "url": {
               "raw": "{{baseUrl}}/api/auth/login",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "api",
-                "auth",
-                "login"
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "auth", "login"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "2. Organizations (Workspaces)",
+      "item": [
+        {
+          "name": "List My Workspaces",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/organizations/my-workspaces",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "organizations", "my-workspaces"]
+            }
+          }
+        },
+        {
+          "name": "Create New Workspace",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Komunitas Startup Bandung\",\n  \"slug\": \"startup-bdg\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/organizations",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "organizations"]
+            }
+          }
+        },
+        {
+          "name": "Switch Workspace",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/organizations/switch/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "organizations", "switch", ":id"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "WORKSPACE_ID_HERE"
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "3. Campaigns",
+      "item": [
+        {
+          "name": "Create Campaign",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Tech Conference 2026\",\n  \"slug\": \"tech-conference-2026\",\n  \"description\": \"Konferensi teknologi terbesar tahun ini\",\n  \"location\": \"Jakarta\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/campaigns",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "campaigns"]
+            }
+          }
+        },
+        {
+          "name": "Get All Campaigns",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/campaigns",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "campaigns"]
+            }
+          }
+        },
+        {
+          "name": "Get Campaign Details",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/campaigns/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "campaigns", ":id"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "UUID_HERE"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Update Campaign",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"published\",\n  \"location\": \"Bandung\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/campaigns/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "campaigns", ":id"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "UUID_HERE"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Delete Campaign",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/campaigns/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "campaigns", ":id"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "UUID_HERE"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Form Fields",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/campaigns/:id/form",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "campaigns", ":id", "form"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "UUID_HERE"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Update Form Fields",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"fields\": [\n    {\n      \"label\": \"Nama Lengkap\",\n      \"fieldKey\": \"full_name\",\n      \"fieldType\": \"text\",\n      \"isRequired\": true,\n      \"sortOrder\": 1\n    },\n    {\n      \"label\": \"Asal Instansi\",\n      \"fieldKey\": \"company\",\n      \"fieldType\": \"text\",\n      \"isRequired\": false,\n      \"sortOrder\": 2\n    }\n  ]\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/campaigns/:id/form",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "campaigns", ":id", "form"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "UUID_HERE"
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "3.5 Public APIs (No Auth)",
+      "item": [
+        {
+          "name": "Get Public Campaign Form",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/public/campaigns/:slug",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "public", "campaigns", ":slug"],
+              "variable": [
+                {
+                  "key": "slug",
+                  "value": "tech-conference-2026"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Submit Form Response",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"respondentEmail\": \"johndoe@gmail.com\",\n  \"respondentName\": \"John Doe\",\n  \"answers\": {\n    \"full_name\": \"John Doe\",\n    \"company\": \"PT Mencari Cinta Sejati\"\n  }\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/public/campaigns/:id/submit",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "public", "campaigns", ":id", "submit"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "UUID_CAMPAIGN_HERE"
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "4. Users & Members",
+      "item": [
+        {
+          "name": "Get Current User (Me)",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/user/me",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "user", "me"]
+            }
+          }
+        },
+        {
+          "name": "Get All Members in Active Workspace",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/user",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "user"]
+            }
+          }
+        },
+        {
+          "name": "Get User By ID",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/user/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "user", ":id"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "USER_ID_HERE"
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "5. System Owner (God Mode)",
+      "item": [
+        {
+          "name": "Get App Metrics",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/admin/metrics",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "admin", "metrics"]
+            }
+          }
+        },
+        {
+          "name": "Get All Global Users",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/admin/users",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "admin", "users"]
+            }
+          }
+        },
+        {
+          "name": "Get All Organizations",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/admin/organizations",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "admin", "organizations"]
+            }
+          }
+        },
+        {
+          "name": "Suspend/Delete Organization",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/admin/organizations/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "admin", "organizations", ":id"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "ORG_ID_HERE"
+                }
               ]
             }
           }
@@ -69,6 +599,10 @@
     {
       "key": "baseUrl",
       "value": "http://localhost:3000"
+    },
+    {
+      "key": "token",
+      "value": ""
     }
   ]
 }
