@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { CampaignService } from './campaign.service';
 import { CampaignController } from './campaign.controller';
+import { PublicCampaignController } from './public-campaign.controller';
 import { AuthModule } from '../auth/auth.module';
 import { OrganizationModule } from '../organization/organization.module';
 import { CampaignEntity } from './entities/campaign.entity';
@@ -20,7 +21,7 @@ import { FormSubmissionValueEntity } from './entities/form-submission-value.enti
     AuthModule,
     OrganizationModule,
   ],
-  controllers: [CampaignController],
+  controllers: [CampaignController, PublicCampaignController],
   providers: [CampaignService],
 })
 export class CampaignModule {}

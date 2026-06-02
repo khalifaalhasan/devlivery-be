@@ -1,4 +1,5 @@
 import { Entity, Column, Index, OneToMany } from 'typeorm';
+import { CampaignStatus } from '../../../common/enums/campaign-status.enum';
 import { TenantBaseEntity } from '../../../common/entities/tenant-base.entity';
 import { FormFieldEntity } from './form-field.entity';
 import { FormSubmissionEntity } from './form-submission.entity';
@@ -25,8 +26,12 @@ export class CampaignEntity extends TenantBaseEntity {
   @Column({ type: 'varchar', nullable: true })
   location: string;
 
-  @Column({ type: 'varchar', default: 'draft' })
-  status: string; // draft | published | ongoing | completed | archived
+  @Column({ 
+    type: 'enum', 
+    enum: CampaignStatus, 
+    default: CampaignStatus.DRAFT 
+  })
+  status: CampaignStatus;
 
   @Column({ type: 'varchar', name: 'qr_code_token', unique: true })
   qrCodeToken: string;
