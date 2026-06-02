@@ -8,25 +8,25 @@ export class MemberEntity {
   @PrimaryColumn({ type: 'varchar' })
   id: string;
 
-  @Column({ type: 'varchar', name: 'organization_id' })
+  @Column({ type: 'varchar' })
   organizationId: string;
 
-  @Column({ type: 'varchar', name: 'user_id' })
+  @Column({ type: 'varchar' })
   userId: string;
 
   @Column({ type: 'varchar' })
   role: string; // owner | admin | manager | viewer
 
-  @CreateDateColumn({ type: 'timestamp', name: 'created_at' })
+  @CreateDateColumn({ type: 'timestamp' })
   createdAt: Date;
 
   // Relasi ke Organization
   @ManyToOne(() => OrganizationEntity, (org) => org.members, { onDelete: 'CASCADE' })
-  @JoinColumn({ name: 'organization_id' })
+  @JoinColumn({ name: 'organizationId' })
   organization: OrganizationEntity;
 
   // Relasi ke User
   @ManyToOne(() => UserEntity, { onDelete: 'CASCADE' })
-  @JoinColumn({ name: 'user_id' })
+  @JoinColumn({ name: 'userId' })
   user: UserEntity;
 }

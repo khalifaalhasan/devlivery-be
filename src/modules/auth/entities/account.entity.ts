@@ -6,32 +6,32 @@ export class AccountEntity {
   @PrimaryColumn({ type: 'varchar' })
   id: string;
 
-  @Column({ type: 'varchar', name: 'account_id' })
+  @Column({ type: 'varchar' })
   accountId: string;
 
-  @Column({ type: 'varchar', name: 'provider_id' })
+  @Column({ type: 'varchar' })
   providerId: string;
 
-  @Column({ type: 'varchar', name: 'user_id' })
+  @Column({ type: 'varchar' })
   userId: string;
 
   @ManyToOne(() => UserEntity, (user) => user.accounts, { onDelete: 'CASCADE' })
-  @JoinColumn({ name: 'user_id' })
+  @JoinColumn({ name: 'userId' })
   user: UserEntity;
 
-  @Column({ type: 'text', name: 'access_token', nullable: true })
+  @Column({ type: 'text', nullable: true })
   accessToken: string;
 
-  @Column({ type: 'text', name: 'refresh_token', nullable: true })
+  @Column({ type: 'text', nullable: true })
   refreshToken: string;
 
-  @Column({ type: 'text', name: 'id_token', nullable: true })
+  @Column({ type: 'text', nullable: true })
   idToken: string;
 
-  @Column({ type: 'timestamp', name: 'access_token_expires_at', nullable: true })
+  @Column({ type: 'timestamp', nullable: true })
   accessTokenExpiresAt: Date;
 
-  @Column({ type: 'timestamp', name: 'refresh_token_expires_at', nullable: true })
+  @Column({ type: 'timestamp', nullable: true })
   refreshTokenExpiresAt: Date;
 
   @Column({ type: 'varchar', nullable: true })
@@ -40,9 +40,9 @@ export class AccountEntity {
   @Column({ type: 'varchar', nullable: true })
   password: string;
 
-  @CreateDateColumn({ type: 'timestamp', name: 'created_at' })
+  @CreateDateColumn({ type: 'timestamp' })
   createdAt: Date;
 
-  @UpdateDateColumn({ type: 'timestamp', name: 'updated_at' })
+  @UpdateDateColumn({ type: 'timestamp' })
   updatedAt: Date;
 }

@@ -6,31 +6,31 @@ export class SessionEntity {
   @PrimaryColumn({ type: 'varchar' })
   id: string;
 
-  @Column({ type: 'timestamp', name: 'expires_at' })
+  @Column({ type: 'timestamp' })
   expiresAt: Date;
 
   @Column({ type: 'varchar', unique: true })
   token: string;
 
-  @CreateDateColumn({ type: 'timestamp', name: 'created_at' })
+  @CreateDateColumn({ type: 'timestamp' })
   createdAt: Date;
 
-  @UpdateDateColumn({ type: 'timestamp', name: 'updated_at' })
+  @UpdateDateColumn({ type: 'timestamp' })
   updatedAt: Date;
 
-  @Column({ type: 'varchar', name: 'ip_address', nullable: true })
+  @Column({ type: 'varchar', nullable: true })
   ipAddress: string;
 
-  @Column({ type: 'varchar', name: 'user_agent', nullable: true })
+  @Column({ type: 'varchar', nullable: true })
   userAgent: string;
 
-  @Column({ type: 'varchar', name: 'user_id' })
+  @Column({ type: 'varchar' })
   userId: string;
 
   @ManyToOne(() => UserEntity, (user) => user.sessions, { onDelete: 'CASCADE' })
-  @JoinColumn({ name: 'user_id' })
+  @JoinColumn({ name: 'userId' })
   user: UserEntity;
 
-  @Column({ type: 'varchar', name: 'active_organization_id', nullable: true })
+  @Column({ type: 'varchar', nullable: true })
   activeOrganizationId: string;
 }

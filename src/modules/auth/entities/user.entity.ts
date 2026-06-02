@@ -14,16 +14,16 @@ export class UserEntity {
   @Column({ type: 'varchar', unique: true })
   email: string;
 
-  @Column({ type: 'boolean', name: 'email_verified', default: false })
+  @Column({ type: 'boolean', default: false })
   emailVerified: boolean;
 
   @Column({ type: 'varchar', nullable: true })
   image: string;
 
-  @CreateDateColumn({ type: 'timestamp', name: 'created_at' })
+  @CreateDateColumn({ type: 'timestamp' })
   createdAt: Date;
 
-  @UpdateDateColumn({ type: 'timestamp', name: 'updated_at' })
+  @UpdateDateColumn({ type: 'timestamp' })
   updatedAt: Date;
 
   @Column({ type: 'boolean', name: 'is_superadmin', default: false })

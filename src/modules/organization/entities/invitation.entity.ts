@@ -7,7 +7,7 @@ export class InvitationEntity {
   @PrimaryColumn({ type: 'varchar' })
   id: string;
 
-  @Column({ type: 'varchar', name: 'organization_id' })
+  @Column({ type: 'varchar' })
   organizationId: string;
 
   @Column({ type: 'varchar' })
@@ -19,22 +19,22 @@ export class InvitationEntity {
   @Column({ type: 'varchar', default: 'pending' })
   status: string; // pending | accepted | rejected | expired
 
-  @Column({ type: 'timestamp', name: 'expires_at' })
+  @Column({ type: 'timestamp' })
   expiresAt: Date;
 
-  @Column({ type: 'varchar', name: 'inviter_id' })
+  @Column({ type: 'varchar' })
   inviterId: string;
 
-  @CreateDateColumn({ type: 'timestamp', name: 'created_at' })
+  @CreateDateColumn({ type: 'timestamp' })
   createdAt: Date;
 
   // Relasi ke Organization
   @ManyToOne(() => OrganizationEntity, (org) => org.invitations, { onDelete: 'CASCADE' })
-  @JoinColumn({ name: 'organization_id' })
+  @JoinColumn({ name: 'organizationId' })
   organization: OrganizationEntity;
 
   // Relasi ke User (Pengundang)
   @ManyToOne(() => UserEntity)
-  @JoinColumn({ name: 'inviter_id' })
+  @JoinColumn({ name: 'inviterId' })
   inviter: UserEntity;
 }
