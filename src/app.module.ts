@@ -1,4 +1,5 @@
 import { Module } from '@nestjs/common';
+import { TypeOrmModule } from '@nestjs/typeorm';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { AuthModule } from './modules/auth/auth.module';
@@ -9,9 +10,23 @@ import { DeliveryModule } from './modules/delivery/delivery.module';
 import { TemplateModule } from './modules/template/template.module';
 import { CollabModule } from './modules/collab/collab.module';
 import { AuditModule } from './modules/audit/audit.module';
+import { AppDataSource } from './database/data-source';
+import { UserModule } from './modules/user/user.module';
 
 @Module({
-  imports: [AuthModule, OrganizationModule, CampaignModule, AttendanceModule, DeliveryModule, TemplateModule, CollabModule, AuditModule],
+  imports: [
+    TypeOrmModule.forRoot(AppDataSource.options),
+    AuthModule, 
+    OrganizationModule, 
+    CampaignModule, 
+    AttendanceModule, 
+    DeliveryModule, 
+    TemplateModule, 
+    CollabModule, 
+    AuditModule, 
+    UserModule
+  ],
+
   controllers: [AppController],
   providers: [AppService],
 })
