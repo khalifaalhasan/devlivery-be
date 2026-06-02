@@ -12,7 +12,12 @@ export class CampaignService {
     return `This action returns all campaign`;
   }
 
+
   findOne(id: number) {
+    return `This action returns a #${id} campaign`;
+  }
+
+  findForm(id: number) {
     return `This action returns a #${id} campaign`;
   }
 
