@@ -4,3 +4,7 @@ export enum Role {
     MANAGER = 'manager',
     VIEWER = 'viewer',
 }
+
+export enum Status {
+    
+}

@@ -1,4 +1,4 @@
-import { Entity, PrimaryColumn, Column, CreateDateColumn, OneToMany } from 'typeorm';
+import { Entity, PrimaryColumn, Column, CreateDateColumn, DeleteDateColumn, OneToMany } from 'typeorm';
 import { MemberEntity } from './member.entity';
 import { InvitationEntity } from './invitation.entity';
 
@@ -22,6 +22,9 @@ export class OrganizationEntity {
 
   @CreateDateColumn({ type: 'timestamp' })
   createdAt: Date;
+
+  @DeleteDateColumn({ type: 'timestamp', name: 'deleted_at', nullable: true })
+  deletedAt: Date;
 
   @Column({ type: 'varchar', default: 'free' })
   plan: string; 

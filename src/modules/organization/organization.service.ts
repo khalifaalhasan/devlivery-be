@@ -1,26 +1,70 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Inject, ConflictException } from '@nestjs/common';
+import { BETTER_AUTH } from '../auth/better-auth.provider';
 import { CreateOrganizationDto } from './dto/create-organization.dto';
-import { UpdateOrganizationDto } from './dto/update-organization.dto';
 
 @Injectable()
 export class OrganizationService {
-  create(createOrganizationDto: CreateOrganizationDto) {
-    return 'This action adds a new organization';
+  constructor(
+    @Inject(BETTER_AUTH)
+    private readonly auth: any,
+  ) {}
+
+  async createWorkspace(token: string, dto: CreateOrganizationDto) {
+    try {
+      const orgResponse = await this.auth.api.createOrganization({
+        body: {
+          name: dto.name,
+          slug: dto.slug,
+        },
+        headers: new Headers({
+          Authorization: `Bearer ${token}`,
+        }),
+      });
+
+      // Otomatis pindah ke workspace baru ini
+      await this.auth.api.setActiveOrganization({
+        body: {
+          organizationId: orgResponse.id,
+        },
+        headers: new Headers({
+          Authorization: `Bearer ${token}`,
+        }),
+      });
+
+      return {
+        message: 'Workspace berhasil dibuat dan diaktifkan',
+        organization: orgResponse,
+      };
+    } catch (error) {
+      if (error.code === 'ORGANIZATION_ALREADY_EXISTS' || error.status === 422) {
+        throw new ConflictException('Slug organisasi sudah terdaftar');
+      }
+      throw error;
+    }
   }
 
-  findAll() {
-    return `This action returns all organization`;
+  async listMyWorkspaces(token: string) {
+    const orgs = await this.auth.api.listOrganizations({
+      headers: new Headers({
+        Authorization: `Bearer ${token}`,
+      }),
+    });
+    return orgs;
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} organization`;
-  }
+  async switchWorkspace(token: string, organizationId: string) {
+    await this.auth.api.setActiveOrganization({
+      body: {
+        organizationId,
+      },
+      headers: new Headers({
+        Authorization: `Bearer ${token}`,
+      }),
+    });
 
-  update(id: number, updateOrganizationDto: UpdateOrganizationDto) {
-    return `This action updates a #${id} organization`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} organization`;
+    return {
+      message: 'Berhasil pindah workspace',
+      activeOrganizationId: organizationId,
+    };
   }
 }

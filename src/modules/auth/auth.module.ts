@@ -22,6 +22,6 @@ import databaseConfig from 'src/database/database.config';
   ],
   controllers: [AuthController],
   providers: [AuthService, BetterAuthProvider],
-  exports: [TypeOrmModule],
+  exports: [TypeOrmModule, BetterAuthProvider],
 })
 export class AuthModule {}

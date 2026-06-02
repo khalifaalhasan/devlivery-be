@@ -68,6 +68,13 @@ export class AuthController {
           createdAt: '2026-06-01T12:07:08.767Z',
           updatedAt: '2026-06-01T12:07:08.767Z',
         },
+        activeOrganization: {
+          id: 'fwUBNU7QirWQ9ksyexCpZiqVQB4FE6KB',
+          name: 'Org Final',
+          slug: 'org-final-test',
+          logo: null,
+          createdAt: '2026-06-01T12:12:29.791Z',
+        },
       },
     },
   })

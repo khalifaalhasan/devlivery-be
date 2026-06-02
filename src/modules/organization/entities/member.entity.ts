@@ -1,4 +1,4 @@
-import { Entity, PrimaryColumn, Column, CreateDateColumn, ManyToOne, JoinColumn, Index } from 'typeorm';
+import { Entity, PrimaryColumn, Column, CreateDateColumn, DeleteDateColumn, ManyToOne, JoinColumn, Index } from 'typeorm';
 import { OrganizationEntity } from './organization.entity';
 import { UserEntity } from '../../auth/entities/user.entity';
 
@@ -19,6 +19,9 @@ export class MemberEntity {
 
   @CreateDateColumn({ type: 'timestamp' })
   createdAt: Date;
+
+  @DeleteDateColumn({ type: 'timestamp', name: 'deleted_at', nullable: true })
+  deletedAt: Date;
 
   // Relasi ke Organization
   @ManyToOne(() => OrganizationEntity, (org) => org.members, { onDelete: 'CASCADE' })
