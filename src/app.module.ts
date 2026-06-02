@@ -12,19 +12,21 @@ import { CollabModule } from './modules/collab/collab.module';
 import { AuditModule } from './modules/audit/audit.module';
 import { AppDataSource } from './database/data-source';
 import { UserModule } from './modules/user/user.module';
+import { AdminModule } from './modules/admin/admin.module';
 
 @Module({
   imports: [
     TypeOrmModule.forRoot(AppDataSource.options),
-    AuthModule, 
-    OrganizationModule, 
-    CampaignModule, 
-    AttendanceModule, 
-    DeliveryModule, 
-    TemplateModule, 
-    CollabModule, 
-    AuditModule, 
-    UserModule
+    AuthModule,
+    OrganizationModule,
+    CampaignModule,
+    AttendanceModule,
+    DeliveryModule,
+    TemplateModule,
+    CollabModule,
+    AuditModule,
+    UserModule,
+    AdminModule,
   ],
 
   controllers: [AppController],
