@@ -16,7 +16,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20' # Sesuaikan dengan versi Node.js di server
+          node-version: '24.16.0'
           cache: 'npm'
 
       - name: Install Dependencies
@@ -61,6 +61,10 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           port: ${{ vars.SSH_PORT || '22' }}
           script: |
+            # Load NVM and node environment for non-interactive SSH session
+            export NVM_DIR="$HOME/.nvm"
+            [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+            
             # Masuk ke direktori aplikasi
             cd ${{ vars.DEPLOY_PATH }}
             
