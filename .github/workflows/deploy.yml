@@ -1,0 +1,81 @@
+name: Deploy to VPS
+
+on:
+  push:
+    branches:
+      - main # Jalankan workflow ini saat ada push ke branch main
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20' # Sesuaikan dengan versi Node.js di server
+          cache: 'npm'
+
+      - name: Install Dependencies
+        run: npm ci
+
+      - name: Build Application
+        run: npm run build
+
+      - name: Prepare Deployment Files
+        run: |
+          mkdir -p deployment_package
+          cp -r dist deployment_package/
+          cp package.json deployment_package/
+          cp package-lock.json deployment_package/
+          cp ecosystem.config.js deployment_package/
+          cp docker-compose.yml deployment_package/
+          
+      - name: Create .env file from GitHub Secret
+        run: |
+          echo "${{ secrets.PRODUCTION_ENV }}" > deployment_package/.env
+
+      - name: Setup SSH Key
+        uses: webfactory/ssh-agent@v0.9.0
+        with:
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+
+      - name: Add Server to Known Hosts
+        run: |
+          mkdir -p ~/.ssh
+          ssh-keyscan -p ${{ vars.SSH_PORT || '22' }} ${{ secrets.SSH_HOST }} >> ~/.ssh/known_hosts
+
+      - name: Sync Files to VPS using rsync
+        run: |
+          # Menyalin isi dari folder deployment_package ke dalam folder tujuan di VPS
+          rsync -avz --delete -e "ssh -p ${{ vars.SSH_PORT || '22' }}" ./deployment_package/ ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:${{ vars.DEPLOY_PATH }}
+
+      - name: Execute Remote SSH Commands
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          port: ${{ vars.SSH_PORT || '22' }}
+          script: |
+            # Masuk ke direktori aplikasi
+            cd ${{ vars.DEPLOY_PATH }}
+            
+            # Memastikan Docker Compose up untuk Redis dan Postgres
+            docker compose up -d
+            
+            # Install dependensi produksi murni
+            npm ci --omit=dev
+            
+            # Menjalankan migrasi database jika ada (opsional, sesuaikan dengan konfigurasi TypeORM kamu)
+            # npm run migration:run
+            
+            # Reload aplikasi menggunakan PM2
+            # Jika aplikasi belum berjalan, pm2 reload akan gagal, maka kita fall-back ke pm2 start
+            pm2 reload ecosystem.config.js || pm2 start ecosystem.config.js
+            
+            # Menyimpan konfigurasi PM2 agar otomatis jalan saat server reboot
+            pm2 save
