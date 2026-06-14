@@ -70,8 +70,8 @@ jobs:
             # Install dependensi produksi murni
             npm ci --omit=dev
             
-            # Running database migrations
-            npm run migration:run
+            # Running database migrations using compiled production code
+            npm run migration:run:prod
             
             # Reload aplikasi menggunakan PM2
             # Jika aplikasi belum berjalan, pm2 reload akan gagal, maka kita fall-back ke pm2 start
