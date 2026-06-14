@@ -70,8 +70,8 @@ jobs:
             # Install dependensi produksi murni
             npm ci --omit=dev
             
-            # Menjalankan migrasi database jika ada (opsional, sesuaikan dengan konfigurasi TypeORM kamu)
-            # npm run migration:run
+            # Running database migrations
+            npm run migration:run
             
             # Reload aplikasi menggunakan PM2
             # Jika aplikasi belum berjalan, pm2 reload akan gagal, maka kita fall-back ke pm2 start
