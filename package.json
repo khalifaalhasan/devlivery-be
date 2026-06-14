@@ -21,9 +21,11 @@
     "typeorm": "ts-node -r tsconfig-paths/register ./node_modules/typeorm/cli.js -d src/database/data-source.ts",
     "migration:generate": "npm run typeorm migration:generate src/database/migrations/$npm_config_name",
     "migration:run": "npm run typeorm migration:run",
+    "migration:drop": "npm run typeorm schema:drop",
     "migration:revert": "npm run typeorm migration:revert"
   },
   "dependencies": {
+    "@nestjs/bullmq": "^11.0.4",
     "@nestjs/common": "^11.0.1",
     "@nestjs/config": "^4.0.4",
     "@nestjs/core": "^11.0.1",
@@ -32,12 +34,14 @@
     "@nestjs/swagger": "^11.4.4",
     "@nestjs/typeorm": "^11.0.1",
     "better-auth": "^1.6.13",
+    "bullmq": "^5.78.1",
     "class-transformer": "^0.5.1",
     "class-validator": "^0.15.1",
     "dotenv": "^17.4.2",
     "joi": "^18.2.1",
     "pg": "^8.21.0",
     "reflect-metadata": "^0.2.2",
+    "resend": "^6.12.4",
     "rxjs": "^7.8.1",
     "typeorm": "^1.0.0"
   },

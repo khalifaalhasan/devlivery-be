@@ -13,10 +13,18 @@ import { AuditModule } from './modules/audit/audit.module';
 import { AppDataSource } from './database/data-source';
 import { UserModule } from './modules/user/user.module';
 import { AdminModule } from './modules/admin/admin.module';
-
+import { BullModule } from '@nestjs/bullmq';
+import { EmailModule } from './modules/email/email.module';
 @Module({
   imports: [
     TypeOrmModule.forRoot(AppDataSource.options),
+    BullModule.forRoot({
+      connection: {
+        host: process.env.REDIS_HOST || 'localhost',
+        port: parseInt(process.env.REDIS_PORT || '6379', 10),
+      },
+    }),
+    EmailModule,
     AuthModule,
     OrganizationModule,
     CampaignModule,

@@ -10,9 +10,12 @@ import { BetterAuthProvider } from './better-auth.provider';
 import { ConfigModule } from '@nestjs/config';
 import databaseConfig from 'src/database/database.config';
 
+import { EmailModule } from '../email/email.module';
+
 @Module({
   imports: [
     ConfigModule.forFeature(databaseConfig),
+    EmailModule,
     TypeOrmModule.forFeature([
       SessionEntity,
       UserEntity,
