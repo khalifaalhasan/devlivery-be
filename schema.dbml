@@ -22,7 +22,6 @@ Table user {
   created_at          timestamp   [not null, default: `now()`]
   updated_at          timestamp   [not null, default: `now()`]
 
-  // Tambahan field (additionalFields di config better-auth)
   is_superadmin       boolean     [not null, default: false, note: 'Hanya untuk admin platform devlivery sendiri']
 
   Note: 'Core table dari better-auth. Menyimpan identitas pengguna.'
@@ -38,7 +37,6 @@ Table session {
   user_agent          varchar
   user_id             varchar     [not null, ref: > user.id]
 
-  // Tambahan field
   active_organization_id varchar   [ref: > organization.id, note: 'Organisasi yang sedang aktif di sesi ini']
 
   Note: 'Core table dari better-auth. Menyimpan sesi login aktif.'
