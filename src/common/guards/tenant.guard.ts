@@ -67,6 +67,7 @@ export class TenantGuard implements CanActivate {
     request.userId = session.userId;
     request.tenantId = session.activeOrganizationId;
     request.userRole = member.role; // owner | admin | manager | viewer
+    request.token = token;
 
     return true;
   }

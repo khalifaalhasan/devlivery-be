@@ -2,6 +2,7 @@ import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Req } fro
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { InviteUserDto } from './dto/invite-user.dto';
 import { ApiTags, ApiBearerAuth, ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { Role } from 'src/common/enums/role.enum';
 import { RolesGuard } from 'src/common/guards/roles.guard';
@@ -9,7 +10,7 @@ import { Roles } from 'src/common/decorators/roles.decorator';
 import { TenantGuard } from 'src/common/guards/tenant.guard';
 import * as tenantRequestInterface from 'src/common/interfaces/tenant-request.interface';
 
-@ApiTags('User')
+@ApiTags('User Management')
 @Controller('user')
 @ApiBearerAuth()
 @UseGuards(TenantGuard, RolesGuard)
@@ -32,6 +33,13 @@ export class UserController {
     return this.userService.findAllByTenant(req.tenantId);
   }
 
+  @Post('invite')
+  @ApiOperation({ summary: 'Invite a new user to the organization' })
+  @Roles(Role.OWNER, Role.ADMIN)
+  invite(@Req() req: tenantRequestInterface.TenantRequest, @Body() inviteUserDto: InviteUserDto) {
+    return this.userService.inviteMember(req.token, req.tenantId, inviteUserDto);
+  }
+
   @Get(':id')
   @ApiOperation({ summary: 'Get user by ID' })
   @ApiResponse({ status: 200, description: 'Successfully retrieved.' })
@@ -41,15 +49,17 @@ export class UserController {
     return this.userService.findOne(id);
   }
 
-  @Patch(':id')
-  @Roles(Role.OWNER, Role.ADMIN, Role.MANAGER)
-  update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
-    return this.userService.update(id, updateUserDto);
+  @Patch(':id/role')
+  @ApiOperation({ summary: 'Update a member role' })
+  @Roles(Role.OWNER, Role.ADMIN)
+  updateRole(@Req() req: tenantRequestInterface.TenantRequest, @Param('id') memberId: string, @Body('role') role: string) {
+    return this.userService.updateMemberRole(req.token, req.tenantId, memberId, role);
   }
 
   @Delete(':id')
-  @Roles(Role.OWNER, Role.ADMIN, Role.MANAGER)
-  remove(@Param('id') id: string) {
-    return this.userService.remove(id);
+  @ApiOperation({ summary: 'Remove a member from the organization' })
+  @Roles(Role.OWNER, Role.ADMIN)
+  remove(@Req() req: tenantRequestInterface.TenantRequest, @Param('id') memberId: string) {
+    return this.userService.removeMember(req.token, req.tenantId, memberId);
   }
 }

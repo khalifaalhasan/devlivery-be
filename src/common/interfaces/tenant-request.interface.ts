@@ -17,4 +17,9 @@ export interface TenantRequest extends Request {
    * Diambil dari MemberEntity (owner | admin | manager | viewer).
    */
   userRole?: string;
+
+  /**
+   * Bearer token yang digunakan untuk autentikasi (jika diperlukan untuk dipassing ke library lain).
+   */
+  token: string;
 }

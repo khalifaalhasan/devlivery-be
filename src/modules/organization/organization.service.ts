@@ -67,4 +67,44 @@ export class OrganizationService {
       activeOrganizationId: organizationId,
     };
   }
+
+  async updateOrganization(token: string, organizationId: string, dto: any) {
+    try {
+      const response = await this.auth.api.updateOrganization({
+        body: {
+          organizationId: organizationId,
+          data: {
+            name: dto.name,
+            slug: dto.slug,
+            logo: dto.logo,
+          }
+        },
+        headers: new Headers({
+          Authorization: `Bearer ${token}`,
+        }),
+      });
+      return { message: 'Berhasil mengupdate organisasi', data: response };
+    } catch (error) {
+      if (error.code === 'ORGANIZATION_ALREADY_EXISTS' || error.status === 422) {
+        throw new ConflictException('Slug organisasi sudah terdaftar');
+      }
+      throw error;
+    }
+  }
+
+  async deleteOrganization(token: string, organizationId: string) {
+    try {
+      const response = await this.auth.api.deleteOrganization({
+        body: {
+          organizationId: organizationId,
+        },
+        headers: new Headers({
+          Authorization: `Bearer ${token}`,
+        }),
+      });
+      return { message: 'Berhasil menghapus organisasi', data: response };
+    } catch (error) {
+      throw error;
+    }
+  }
 }
